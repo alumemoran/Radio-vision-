@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Radiovisión</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0f1115;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #17191e;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #292c33;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 29px;
+}
+
+header p {
+    margin: 7px 0 0;
+    color: #9da1aa;
+}
+
+.container {
+    max-width: 850px;
+    margin: auto;
+    padding: 18px;
+}
+
+/* VISUAL */
+
+.visual {
+    height: 270px;
+    background: #17191e;
+    border-radius: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.visual::before,
+.visual::after {
+    content: "";
+    position: absolute;
+    border: 2px solid #30343c;
+    border-radius: 50%;
+}
+
+.visual::before {
+    width: 180px;
+    height: 180px;
+}
+
+.visual::after {
+    width: 280px;
+    height: 280px;
+}
+
+.visual-center {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: white;
+    position: relative;
+    z-index: 2;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(.85);
+        opacity: .7;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+/* TARJETAS */
+
+.card {
+    background: #17191e;
+    border-radius: 18px;
+    padding: 19px;
+    margin-bottom: 18px;
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+/* CAMPOS */
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid #353942;
+    border-radius: 10px;
+    background: #22252b;
+    color: white;
+    font-size: 15px;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.primary {
+    background: white;
+    color: #111;
+}
+
+.secondary {
+    background: #292c33;
+    color: white;
+}
+
+/* RADIO */
+
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* CANCIÓN */
+
+.song-display {
+    margin-top: 15px;
+    padding: 22px;
+    border-radius: 15px;
+    background: #22252b;
+    text-align: center;
+}
+
+.song-title {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.song-artist {
+    color: #aeb2bb;
+    font-size: 17px;
+    margin-top: 7px;
+}
+
+/* MODOS */
+
+.modes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+}
+
+.mode {
+    display: none;
+}
+
+.mode.active {
+    display: block;
+}
+
+/* DEPORTES */
+
+.scoreboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    text-align: center;
+}
+
+.score {
+    font-size: 55px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+/* NOTICIAS */
+
+.news-display {
+    margin-top: 15px;
+    padding: 20px;
+    background: #22252b;
+    border-radius: 14px;
+    font-size: 22px;
+}
+
+/* PROGRAMA */
+
+.program-display {
+    margin-top: 15px;
+    padding: 20px;
+    background: #22252b;
+    border-radius: 14px;
+}
+
+.program-name {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.question {
+    margin-top: 10px;
+    color: #c2c5cc;
+}
+
+/* MÓVIL */
+
+@media (max-width: 600px) {
+
+    .modes {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .visual {
+        height: 220px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>📻 Radiovisión</h1>
+
+    <p>
+        Escucha la radio. Mira la información.
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- VISUAL PRINCIPAL -->
+
+<div class="visual">
+
+    <div class="visual-center"></div>
+
+</div>
+
+
+<!-- RADIO -->
+
+<div class="card">
+
+    <h2>📻 Radio</h2>
+
+    <input
+        id="radioUrl"
+        type="text"
+        placeholder="Pega aquí la URL de la radio"
+    >
+
+    <button
+        class="primary"
+        onclick="connectRadio()"
+    >
+        ▶️ Conectar
+    </button>
+
+    <audio
+        id="player"
+        controls
+    ></audio>
+
+</div>
+
+
+<!-- CANCIÓN -->
+
+<div class="card">
+
+    <h2>🎵 Canción actual</h2>
+
+    <input
+        id="songName"
+        type="text"
+        placeholder="Nombre de la canción"
+    >
+
+    <input
+        id="artistName"
+        type="text"
+        placeholder="Artista"
+    >
+
+    <button
+        class="primary"
+        onclick="showSong()"
+    >
+        Mostrar canción
+    </button>
+
+    <button
+        class="secondary"
+        onclick="clearSong()"
+    >
+        Limpiar
+    </button>
+
+
+    <div class="song-display">
+
+        <div
+            id="songTitle"
+            class="song-title"
+        >
+            🎵 Ninguna canción
+        </div>
+
+        <div
+            id="songArtist"
+            class="song-artist"
+        >
+            ---
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MODOS -->
+
+<div class="card">
+
+    <h2>Modo visual</h2>
+
+    <div class="modes">
+
+        <button
+            class="secondary"
+            onclick="changeMode('music')"
+        >
+            🎵 Música
+        </button>
+
+        <button
+            class="secondary"
+            onclick="changeMode('sports')"
+        >
+            ⚽ Deportes
+        </button>
+
+        <button
+            class="secondary"
+            onclick="changeMode('news')"
+        >
+            📰 Noticias
+        </button>
+
+        <button
+            class="secondary"
+            onclick="changeMode('program')"
+        >
+            🎙️ Programa
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- MÚSICA -->
+
+<div
+    id="music"
+    class="card mode active"
+>
+
+    <h2>🎵 Música</h2>
+
+    <p>
+        Escribe la canción que estás escuchando
+        para mostrarla en Radiovisión.
+    </p>
+
+</div>
+
+
+<!-- DEPORTES -->
+
+<div
+    id="sports"
+    class="card mode"
+>
+
+    <h2>⚽ Deportes</h2>
+
+    <div class="scoreboard">
+
+        <div>
+
+            <input
+                id="team1"
+                value="Equipo A"
+                onchange="updateTeams()"
+            >
+
+            <div
+                id="score1"
+                class="score"
+            >
+                0
+            </div>
+
+            <button
+                class="primary"
+                onclick="addGoal(1)"
+            >
+                + Gol
+            </button>
+
+        </div>
+
+
+        <div>
+
+            <input
+                id="team2"
+                value="Equipo B"
+                onchange="updateTeams()"
+            >
+
+            <div
+                id="score2"
+                class="score"
+            >
+                0
+            </div>
+
+            <button
+                class="primary"
+                onclick="addGoal(2)"
+            >
+                + Gol
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- NOTICIAS -->
+
+<div
+    id="news"
+    class="card mode"
+>
+
+    <h2>📰 Noticias</h2>
+
+    <input
+        id="newsInput"
+        type="text"
+        placeholder="Escribe un titular"
+    >
+
+    <button
+        class="primary"
+        onclick="showNews()"
+    >
+        Mostrar titular
+    </button>
+
+    <div
+        id="newsOutput"
+        class="news-display"
+    >
+        Sin noticias.
+    </div>
+
+</div>
+
+
+<!-- PROGRAMA -->
+
+<div
+    id="program"
+    class="card mode"
+>
+
+    <h2>🎙️ Programa</h2>
+
+    <input
+        id="programName"
+        type="text"
+        placeholder="Nombre del programa"
+    >
+
+    <input
+        id="programQuestion"
+        type="text"
+        value="¿El jugador pudo haber sido mejor?"
+    >
+
+    <button
+        class="primary"
+        onclick="showProgram()"
+    >
+        Mostrar
+    </button>
+
+    <div
+        id="programOutput"
+        class="program-display"
+    >
+        <div class="program-name">
+            Programa
+        </div>
+
+        <div class="question">
+            ¿El jugador pudo haber sido mejor?
+        </div>
+    </div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* RADIO */
+
+function connectRadio() {
+
+    const url =
+        document.getElementById("radioUrl")
+        .value
+        .trim();
+
+    const player =
+        document.getElementById("player");
+
+    if (!url) {
+        alert("Escribe una URL de radio.");
+        return;
+    }
+
+    player.src = url;
+
+    player.play().catch(() => {
+        console.log("El navegador requiere pulsar reproducir.");
+    });
+}
+
+
+/* CANCIÓN */
+
+function showSong() {
+
+    const song =
+        document.getElementById("songName")
+        .value
+        .trim();
+
+    const artist =
+        document.getElementById("artistName")
+        .value
+        .trim();
+
+
+    document.getElementById("songTitle")
+        .textContent =
+        song
+        ? "🎵 " + song
+        : "🎵 Ninguna canción";
+
+
+    document.getElementById("songArtist")
+        .textContent =
+        artist || "---";
+}
+
+
+function clearSong() {
+
+    document.getElementById("songName")
+        .value = "";
+
+    document.getElementById("artistName")
+        .value = "";
+
+    document.getElementById("songTitle")
+        .textContent =
+        "🎵 Ninguna canción";
+
+    document.getElementById("songArtist")
+        .textContent =
+        "---";
+}
+
+
+/* MODOS */
+
+function changeMode(mode) {
+
+    document
+        .querySelectorAll(".mode")
+        .forEach(element => {
+
+            element.classList.remove("active");
+
+        });
+
+
+    document
+        .getElementById(mode)
+        .classList.add("active");
+}
+
+
+/* DEPORTES */
+
+function addGoal(team) {
+
+    const id =
+        team === 1
+        ? "score1"
+        : "score2";
+
+
+    const element =
+        document.getElementById(id);
+
+
+    element.textContent =
+        Number(element.textContent) + 1;
+}
+
+
+function updateTeams() {
+
+    console.log("Equipos actualizados");
+
+}
+
+
+/* NOTICIAS */
+
+function showNews() {
+
+    const text =
+        document.getElementById("newsInput")
+        .value
+        .trim();
+
+
+    document.getElementById("newsOutput")
+        .textContent =
+        text || "Sin noticias.";
+}
+
+
+/* PROGRAMA */
+
+function showProgram() {
+
+    const name =
+        document.getElementById("programName")
+        .value
+        .trim();
+
+    const question =
+        document.getElementById("programQuestion")
+        .value
+        .trim();
+
+
+    document.getElementById("programOutput")
+        .innerHTML = `
+
+            <div class="program-name">
+                ${name || "Programa"}
+            </div>
+
+            <div class="question">
+                ${question || "Sin pregunta"}
+            </div>
+
+        `;
+}
+
+</script>
+
+</body>
+</html>
